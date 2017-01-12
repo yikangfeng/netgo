@@ -1,11 +1,12 @@
 package main
 
 import (
-	"bootstrap"
 	"fmt"
-
+        "kernel"
 	"sync"
 	"time"
+	"bootstrap"
+	"bootstrap/client"
 )
 
 func main(){
@@ -27,11 +28,14 @@ c.ServerName="kf"
 	_,ok:=m["a"]
 	fmt.Println(ok)
 
-	d:=bootstrap.GetTCPChannel()
+	d:=kernel.GetTCPChannel()
 	fmt.Println(d.Name)
 
 	_bootstrap:=bootstrap.New();
-	_bootstrap.Channel(bootstrap.GetTCPChannel()).Bind(1024).Sync()
+	_bootstrap.Channel(kernel.GetTCPChannel()).Bind(1024).Sync()
+
+
+client.New()
 
 
 }

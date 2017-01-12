@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"kernel"
 )
 
 /*
@@ -17,7 +18,7 @@ type ServerBootstrap struct {
 
  childOption map[string]interface{}
 
- _channel *Channel
+ _channel *kernel.Channel
 
 
 }
@@ -29,7 +30,7 @@ func  New() *ServerBootstrap{
 	childOption:make(map[string]interface{})}
 }
 
-func (this *ServerBootstrap)Channel( channel *Channel) (_this *ServerBootstrap) {
+func (this *ServerBootstrap)Channel( channel *kernel.Channel) (_this *ServerBootstrap) {
 	if(channel==nil){
 		return nil
 	}
