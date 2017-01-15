@@ -3,6 +3,12 @@ package client
 import (
 "sync"
 	"kernel"
+	"kernel/handler"
+	"net"
+	"fmt"
+	"os"
+	"kernel/channel"
+	"kernel/channel/socket"
 )
 
 /*
@@ -12,7 +18,7 @@ type ClientBootstrap struct {
 
 	option map[string]interface{}
 
-	_channel *kernel.Channel
+	channel channel.IChannel
 
 
 }
@@ -23,11 +29,11 @@ func  New() *ClientBootstrap{
 	return &ClientBootstrap{option:make(map[string]interface{})}
 }
 
-func (this *ClientBootstrap)Channel( channel *kernel.Channel) (_this *ClientBootstrap) {
-	if(channel==nil){
+func (this *ClientBootstrap)Channel( _channel *channel.IChannel) (_this *ClientBootstrap) {
+	if(_channel==nil){
 		return nil
 	}
-	this._channel=channel;
+	this.channel=_channel;
 	return this
 }
 
@@ -41,12 +47,12 @@ func (this *ClientBootstrap)Option( key  string, v interface{}) *ClientBootstrap
 
 
 
-func (this *ClientBootstrap)Handler( key  string, v interface{}) *ClientBootstrap {
+func (this *ClientBootstrap)Handler( channelHandler handler.ChannelHandler) *ClientBootstrap {
 	return this
 }
 
-func (this *ClientBootstrap)Connect(port int) *ClientBootstrap {
-
+func (this *ClientBootstrap)Connect(host string,port int) *ClientBootstrap {
+	this.channel.(socket.IClientSocketChannel).Connect(host,port)
 	return this
 }
 func (this *ClientBootstrap)Sync() *ClientBootstrap {
