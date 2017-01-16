@@ -21,7 +21,7 @@ type ClientBootstrap struct {
 
 var _wait sync.WaitGroup
 
-func  New() *ClientBootstrap{
+func  NewClientBootstrap() *ClientBootstrap{
 	return &ClientBootstrap{option:make(map[string]interface{})}
 }
 

@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"os"
 	"bootstrap"
+	"bootstrap/client"
+	"kernel/channel"
 )
 
 func main() {
 
-   _bootstrap:=bootstrap.New();
-	_bootstrap.Channel(bootstrap.GetTCPChannel()).Bind(1024).Sync()
+   _bootstrap:=client.NewClientBootstrap()
 }
 

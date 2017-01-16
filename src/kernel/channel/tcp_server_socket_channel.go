@@ -44,7 +44,7 @@ func (this *TCPServerSocketChannel)DoBindAndAccept(port int)  {
 
 }
 
-func (this *TCPServerSocketChannel) Pipeline() (channelPipeline *channel.ChannelPipeline) {
+func (this *TCPServerSocketChannel) Pipeline() (channelPipeline *ChannelPipeline) {
 	return  nil
 }
 

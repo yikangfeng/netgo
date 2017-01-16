@@ -23,7 +23,7 @@ type ServerBootstrap struct {
 
 var _wait sync.WaitGroup
 
-func  New() *ServerBootstrap{
+func  NewServerBootstrap() *ServerBootstrap{
 	return &ServerBootstrap{option:make(map[string]interface{}),
 	childOption:make(map[string]interface{})}
 }

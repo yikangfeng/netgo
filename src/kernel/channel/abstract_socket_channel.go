@@ -26,7 +26,11 @@ func (this *AbstractSocketChannel)Config(_config *map[string]interface{}){
      this.config=_config
 }
 
+func (this *AbstractSocketChannel)GetConfig() *map[string]interface{}{
+	return this.config
+}
+
 
 func (this *AbstractSocketChannel)Connect(host string,port int)  {
-	this.Pipeline().Connect(host,port)
+	this.pipeline().Connect(host,port)
 }

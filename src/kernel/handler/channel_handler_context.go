@@ -53,12 +53,10 @@ func (this *ChannelHandlerContext)Handler() IChannelHandler {
 }
 
 func (this *AbstractChannelHandlerContext)Connect(host string,port int)  {
-	//this.findContextOutbound()
-        //this.Handler().(IChannelOutboundHandler).Connect(host,port)
-
+	this.findContextOutbound().Connect(host,port)
 }
 
-func (this *ChannelHandlerContext)findContextInbound() *ChannelHandlerContext {
+func (this *AbstractChannelHandlerContext)findContextInbound() *ChannelHandlerContext {
 	ctx := this;
 	for {
 		ctx = ctx.Next;
@@ -69,7 +67,7 @@ func (this *ChannelHandlerContext)findContextInbound() *ChannelHandlerContext {
 	return ctx
 }
 
-func (this *ChannelHandlerContext)findContextOutbound() *ChannelHandlerContext {
+func (this *AbstractChannelHandlerContext)findContextOutbound() *ChannelHandlerContext {
 	ctx := this;
 	for {
 		ctx = ctx.Prev;
