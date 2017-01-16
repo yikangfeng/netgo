@@ -1,4 +1,4 @@
-package socket
+package channel
 
 import (
 	"kernel/protocols"
@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"kernel/channel"
 )
 type IServerSocketChannel interface {
-	channel.ISocketChannel
+	ISocketChannel
 	DoBindAndAccept(port int)
 }
 type TCPServerSocketChannel struct {

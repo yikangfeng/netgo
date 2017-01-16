@@ -1,4 +1,4 @@
-package socket
+package channel
 
 
 type UDPSocketChannel struct {

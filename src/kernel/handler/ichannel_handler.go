@@ -2,9 +2,8 @@ package handler
 
 
 
-type ChannelHandler interface {
+type IChannelHandler interface {
 	HandlerAdded() (int,error)
 
 	HandlerRemoved() (int,error)
-
 }

@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"kernel/channel/socket"
-	"kernel/channel"
 )
 
 type Base struct {
@@ -66,37 +64,15 @@ func (base2 Base2)Test()  {
 
 func main() {
 
-	var channel channel.IChannel =&socket.TCPServerSocketChannel{}
-
-	channel.(socket.IServerSocketChannel).DoBindAndAccept(90)
-
-
-
-
-
-
-
-
-var _base Base2=Base2{}
-	_base.Base1.Test()
-
-
-
-
-
-
-
-
-	c := new(Child)
-	c.base.SetName("world")
-	fmt.Println(c.GetName())
-
-	c2 := new(Child2)
-	c2.base = new(Base)  // 因为Child2里面的Base是指针类型，所以必须提供一个Base的实例
-	fmt.Println(c2.GetName())
+var m	map[string]interface{}=make(map[string]interface{})
+	m["a"]="aa"
+	fmt.Println(m["a"])
+	test1(m)
+	fmt.Println(m["a"])
 }
-
-
+func test1(m map[string]interface{}) {
+	m["a"]="bb"
+}
 func test() Base{
     return Base{Name:"kf"}
 }

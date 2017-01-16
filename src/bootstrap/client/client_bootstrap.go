@@ -2,13 +2,8 @@ package client
 
 import (
 "sync"
-	"kernel"
 	"kernel/handler"
-	"net"
-	"fmt"
-	"os"
 	"kernel/channel"
-	"kernel/channel/socket"
 )
 
 /*
@@ -20,6 +15,7 @@ type ClientBootstrap struct {
 
 	channel channel.IChannel
 
+	handler handler.IChannelHandler
 
 }
 
@@ -47,14 +43,26 @@ func (this *ClientBootstrap)Option( key  string, v interface{}) *ClientBootstrap
 
 
 
-func (this *ClientBootstrap)Handler( channelHandler handler.ChannelHandler) *ClientBootstrap {
+func (this *ClientBootstrap)Handler( channelHandler handler.IChannelHandler) *ClientBootstrap {
+	this.handler=channelHandler
 	return this
 }
 
 func (this *ClientBootstrap)Connect(host string,port int) *ClientBootstrap {
-	this.channel.(socket.IClientSocketChannel).Connect(host,port)
+        this.init()
+	clientSocketChannel:=this.channel.(channel.AbstractSocketChannel)
+	go func() {
+		clientSocketChannel.Connect(host, port)
+	}()
 	return this
 }
+
+func (this *ClientBootstrap)init()  {
+	this.channel.(channel.AbstractSocketChannel).Config(&this.option)
+     this.channel.Pipeline().AddLast(this.handler)
+
+}
+
 func (this *ClientBootstrap)Sync() *ClientBootstrap {
 	return this
 }
