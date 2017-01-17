@@ -2,7 +2,7 @@ package channel
 
 
 type IChannel interface {
-     Pipeline() (channelPipeline *ChannelPipeline)
+     Pipeline() (IChannelPipeline)
      Close()
      Config(config map[string]interface{})
      Connect(host string,port int)

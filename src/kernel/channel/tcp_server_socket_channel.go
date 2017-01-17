@@ -6,26 +6,35 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"kernel/intf/external/channel"
+
 )
 type IServerSocketChannel interface {
-	ISocketChannel
-	DoBindAndAccept(port int)
+	channel.ISocketChannel
+	doBindAndAccept(host string,port int)
 }
 type TCPServerSocketChannel struct {
-
+	AbstractSocketChannel
 }
 
-func (this *TCPServerSocketChannel)DoBindAndAccept(port int)  {
 
-	netListen, err := net.Listen(protocols.GetTCPProtocol().Name, fmt.Sprintf(":%d",port))
+func  NewTCPServerSocketChannel() (IServerSocketChannel){
+	instance:=&TCPServerSocketChannel{}
+	instance.pipeline=NewChannelPipeline(instance)
+	instance.config=make(map[string]interface{})
+	return instance
+}
+
+func (this *TCPServerSocketChannel)doBindAndAccept(host string,port int)  {
+	netListener, err := net.Listen(protocols.GetTCPProtocol().Name, fmt.Sprintf("%s:%d",host,port))
 	checkError(err)
-	defer netListen.Close()
+	defer netListener.Close()
 	Log("Waiting for clients")
 
 	go func() {
 		for {
 			Log("start blocking...")
-			conn, err := netListen.Accept()
+			conn, err := netListener.Accept()
 			Log("accepted conn.")
 			if err != nil {
 				continue
@@ -43,11 +52,6 @@ func (this *TCPServerSocketChannel)DoBindAndAccept(port int)  {
 
 
 }
-
-func (this *TCPServerSocketChannel) Pipeline() (channelPipeline *ChannelPipeline) {
-	return  nil
-}
-
 func Log(v ...interface{}) {
 	log.Println(v)
 }
