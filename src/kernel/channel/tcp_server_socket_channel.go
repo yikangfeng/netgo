@@ -9,23 +9,20 @@ import (
 	"kernel/intf/external/channel"
 
 )
-type IServerSocketChannel interface {
-	channel.ISocketChannel
-	doBindAndAccept(host string,port int)
-}
-type TCPServerSocketChannel struct {
+
+type TCPServerSocketChannel struct {//impl IServerSocketChannel
 	AbstractSocketChannel
 }
 
 
-func  NewTCPServerSocketChannel() (IServerSocketChannel){
+func  NewTCPServerSocketChannel() (channel.IServerSocketChannel){
 	instance:=&TCPServerSocketChannel{}
 	instance.pipeline=NewChannelPipeline(instance)
 	instance.config=make(map[string]interface{})
 	return instance
 }
 
-func (this *TCPServerSocketChannel)doBindAndAccept(host string,port int)  {
+func (this *TCPServerSocketChannel)DoBindAndAccept(host string,port int)  {
 	netListener, err := net.Listen(protocols.GetTCPProtocol().Name, fmt.Sprintf("%s:%d",host,port))
 	checkError(err)
 	defer netListener.Close()

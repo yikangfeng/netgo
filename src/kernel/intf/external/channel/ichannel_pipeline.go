@@ -16,7 +16,7 @@ type IChannelPipeline interface {
 	RemoveLast() (handler.IChannelHandler)
 	Remove(handler handler.IChannelHandler)
 
-	replace(oldHandler handler.IChannelHandler, newName string, newHandler handler.IChannelHandler) (IChannelPipeline)
+	Replace(oldHandler handler.IChannelHandler, newName string, newHandler handler.IChannelHandler) (IChannelPipeline)
 
 	Connect(host string, port int)
 	Bind(host string, port int)

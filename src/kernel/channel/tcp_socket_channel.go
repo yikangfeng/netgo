@@ -6,24 +6,22 @@ import (
 	"os"
 	"kernel/protocols"
 	"time"
+	"kernel/intf/external/channel"
 )
 
-type IClientSocketChannel interface {
-	connectAndInit(host string,port int)
-}
 type TCPSocketChannel struct {//impl IClientSocketChannel
 	AbstractSocketChannel
 }
 
-func  NewTCPSocketChannel() (*TCPSocketChannel){
+func  NewTCPSocketChannel() (channel.IClientSocketChannel){
 	instance:=&TCPSocketChannel{}
-	instance.pipeline=&ChannelPipeline{}
-	instance.config=nil
+	instance.pipeline=NewChannelPipeline(instance)
+	instance.config=make(map[string]interface{})
       return instance
 }
 
 
-func (this *TCPSocketChannel) connectAndInit(host string,port int) {
+func (this *TCPSocketChannel) ConnectAndInit(host string,port int) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", fmt.Sprintf("%s:%d",host,port))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
@@ -45,6 +43,9 @@ func (this *TCPSocketChannel) connectAndInit(host string,port int) {
 
 func (this *TCPSocketChannel) init(conn *net.TCPConn) {
 	config:=this.GetConfig();
+	if(config==nil) {
+		return
+	}
 	if _,ok := config[ChannelOptions.Deadline];!ok {
 	   conn.SetDeadline(this.config[ChannelOptions.Deadline].(time.Time))
 	}

@@ -5,6 +5,7 @@ import (
 	"kernel/intf/external/handler"
 	handler_   "kernel/handler"
 	"reflect"
+	"fmt"
 )
 //this is DefaultChannelPipeline
 type ChannelPipeline struct {
@@ -16,46 +17,12 @@ type ChannelPipeline struct {
 	handlers map[string]handler.IChannelHandlerContext
 }
 
-type TailContext struct {
-	//impl IChannelInboundHandler
-	handler_.AbstractChannelHandlerContext
-}
-
-func (this *TailContext) Bind(host string, port int) {
-	this.Channel.(IServerSocketChannel).doBindAndAccept(host, port)
-}
-
-func (this *TailContext) Connect(host string, port int) {
-
-}
-
-func (this *TailContext) Handler() (handler.IChannelHandler) {
-	return this
-}
-
-type HeadContext struct {
-	//impl IChannelOutboundHandler
-	handler_.AbstractChannelHandlerContext
-}
-
-func (this *HeadContext) Connect(host string, port int) {
-	this.Channel.(IClientSocketChannel).connectAndInit(host, port)
-}
-
-func (this *HeadContext) Bind(host string, port int) {
-
-}
-
-func (this *HeadContext) Handler() (handler.IChannelHandler) {
-	return this
-}
-
-func NewChannelPipeline(_channel channel.IChannel) *ChannelPipeline {
+func NewChannelPipeline(_channel channel.IChannel) channel.IChannelPipeline {
 	channelPipeline := &ChannelPipeline{}
 	channelPipeline.channel = _channel
 	channelPipeline.handlers = make(map[string]handler.IChannelHandlerContext, 4)
 
-	headerCtx := &HeadContext{}
+	headerCtx := &handler_.HeadContext{}
 	headerCtx.SetPrev(nil)
 	headerCtx.SetNext(nil)
 	headerCtx.Pipeline = channelPipeline
@@ -64,7 +31,7 @@ func NewChannelPipeline(_channel channel.IChannel) *ChannelPipeline {
 	headerCtx.Inbound = false
 	headerCtx.Outbound = true
 
-	tailCtx := &TailContext{}
+	tailCtx := &handler_.TailContext{}
 	tailCtx.SetPrev(nil)
 	tailCtx.SetNext(nil)
 	tailCtx.Pipeline = channelPipeline
@@ -283,6 +250,9 @@ func (this *ChannelPipeline)context(handler handler.IChannelHandler) (handler.IC
 }
 
 func (this *ChannelPipeline)Connect(host string, port int) {
+	if(this.tail==nil){
+		fmt.Println("tail is nil")
+	}
 	this.tail.Connect(host, port)
 }
 
