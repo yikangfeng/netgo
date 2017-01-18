@@ -23,11 +23,11 @@ type ChannelHandlerContext struct {//extends AbstractChannelHandlerContext
 
 }
 
-func NewChannelHandlerContext(_pipeline channel.IChannelPipeline,_name string,_handler handler.IChannelHandler ) *ChannelHandlerContext {
+func NewChannelHandlerContext(_pipeline channel.IChannelPipeline,_name string,_handler handler.IChannelHandler ) handler.IChannelHandlerContext {
 	return NewChannelHandlerContext0(_pipeline,_name,isInbound(_handler),isOutbound(_handler),_handler)
 }
 
-func NewChannelHandlerContext0(_pipeline channel.IChannelPipeline,_name string,inBound bool,outBound bool,_handler handler.IChannelHandler ) *ChannelHandlerContext {
+func NewChannelHandlerContext0(_pipeline channel.IChannelPipeline,_name string,inBound bool,outBound bool,_handler handler.IChannelHandler ) handler.IChannelHandlerContext {
 	context:=&ChannelHandlerContext{}
 	context.Inbound=inBound
 	context.Outbound=outBound
@@ -69,6 +69,9 @@ func (this *AbstractChannelHandlerContext)SetPrev(ctx handler.IChannelHandlerCon
 	this.prev=ctx
 }
 
+func (this *AbstractChannelHandlerContext)GetName() string{
+     return this.Name
+}
 
 func (this *AbstractChannelHandlerContext)Connect(host string,port int)  {
 	this.findContextOutbound().Connect(host,port)
