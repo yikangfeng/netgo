@@ -45,34 +45,34 @@ func (this *TCPSocketChannel) connectAndInit(host string,port int) {
 
 func (this *TCPSocketChannel) init(conn *net.TCPConn) {
 	config:=this.GetConfig();
-	if _,ok := config[ChannelOptions.Deadline];ok {
+	if _,ok := config[ChannelOptions.Deadline];!ok {
 	   conn.SetDeadline(this.config[ChannelOptions.Deadline].(time.Time))
 	}
 
-	if _,ok := config[ChannelOptions.KeepAlive];ok {
+	if _,ok := config[ChannelOptions.KeepAlive];!ok {
 		conn.SetKeepAlive(this.config[ChannelOptions.KeepAlive].(bool))
 	}
 
-	if _,ok := config[ChannelOptions.KeepAlivePeriod];ok {
+	if _,ok := config[ChannelOptions.KeepAlivePeriod];!ok {
 		conn.SetKeepAlivePeriod(this.config[ChannelOptions.KeepAlivePeriod].(time.Duration))
 	}
 
-	if _,ok := config[ChannelOptions.Linger];ok {
+	if _,ok := config[ChannelOptions.Linger];!ok {
 		conn.SetLinger(this.config[ChannelOptions.Linger].(int))
 	}
-	if _,ok := config[ChannelOptions.NoDelay];ok {
+	if _,ok := config[ChannelOptions.NoDelay];!ok {
 		conn.SetNoDelay(this.config[ChannelOptions.NoDelay].(bool))
 	}
-	if _,ok := config[ChannelOptions.ReadBuffer];ok {
+	if _,ok := config[ChannelOptions.ReadBuffer];!ok {
 		conn.SetReadBuffer(this.config[ChannelOptions.ReadBuffer].(int))
 	}
-	if _,ok := config[ChannelOptions.ReadDeadline];ok {
+	if _,ok := config[ChannelOptions.ReadDeadline];!ok {
 		conn.SetReadDeadline(this.config[ChannelOptions.ReadDeadline].(time.Time))
 	}
-	if _,ok := config[ChannelOptions.WriteBuffer];ok {
+	if _,ok := config[ChannelOptions.WriteBuffer];!ok {
 		conn.SetWriteBuffer(this.config[ChannelOptions.WriteBuffer].(int))
 	}
-	if _,ok := config[ChannelOptions.WriteDeadline];ok {
+	if _,ok := config[ChannelOptions.WriteDeadline];!ok {
 		conn.SetWriteDeadline(this.config[ChannelOptions.WriteDeadline].(time.Time))
 	}
 }

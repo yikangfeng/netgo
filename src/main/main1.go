@@ -4,6 +4,7 @@ import (
 
 	"fmt"
 
+
 )
 
 
@@ -25,16 +26,11 @@ type test2 struct {
 func main(){
 
 
-	var t2 test=&test2{}
-var pt2 test=nil
-
-
-
-	fmt.Println(pt2)
-
-
-
-	fmt.Println(t2)
+	var a string="b"
+	var b string="a"
+	if a!=b{
+		fmt.Println("true")
+	}
 
 
 }
