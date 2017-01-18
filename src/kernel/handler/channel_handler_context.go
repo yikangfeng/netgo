@@ -89,13 +89,8 @@ func (this *AbstractChannelHandlerContext)GetOutbound() (bool)  {
 	return this.Outbound
 }
 
-
-func (this *AbstractChannelHandlerContext)Handler() (handler.IChannelHandler)  {
-	return this
-}
-
 func (this *AbstractChannelHandlerContext)findContextInbound() handler.IChannelHandlerContext {
-	var ctx handler.IChannelHandlerContext;
+	var ctx handler.IChannelHandlerContext=this
 	for {
 		ctx = ctx.Next();
 		if ctx.GetInbound() {
@@ -106,7 +101,7 @@ func (this *AbstractChannelHandlerContext)findContextInbound() handler.IChannelH
 }
 
 func (this *AbstractChannelHandlerContext)findContextOutbound() handler.IChannelHandlerContext {
-	var ctx handler.IChannelHandlerContext;
+	var ctx handler.IChannelHandlerContext=this
 	for {
 		ctx = ctx.Prev();
 		if ctx.GetOutbound() {

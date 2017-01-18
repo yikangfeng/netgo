@@ -1,19 +1,22 @@
 package handler
 
-import ("kernel/intf/external/handler"
-	"kernel/intf/external/channel"
+import (
+	"kernel/intf/external/handler"
+	//"kernel/intf/external/channel"
+
 )
 
 type TailContext struct {
-	//impl IChannelInboundHandler
+					      //impl IChannelInboundHandler
 	AbstractChannelHandlerContext
 }
 
 func (this *TailContext) Bind(host string, port int) {
-	this.Channel.(channel.IServerSocketChannel).DoBindAndAccept(host, port)
+
 }
 
 func (this *TailContext) Connect(host string, port int) {
+
 }
 
 func (this *TailContext) Handler() (handler.IChannelHandler) {

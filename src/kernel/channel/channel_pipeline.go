@@ -5,7 +5,8 @@ import (
 	"kernel/intf/external/handler"
 	handler_   "kernel/handler"
 	"reflect"
-	"fmt"
+	//"fmt"
+	//"fmt"
 )
 //this is DefaultChannelPipeline
 type ChannelPipeline struct {
@@ -250,14 +251,11 @@ func (this *ChannelPipeline)context(handler handler.IChannelHandler) (handler.IC
 }
 
 func (this *ChannelPipeline)Connect(host string, port int) {
-	if(this.tail==nil){
-		fmt.Println("tail is nil")
-	}
-	this.tail.Connect(host, port)
+	this.tail.(*handler_.TailContext).AbstractChannelHandlerContext.Connect(host, port)
 }
 
 func (this *ChannelPipeline)Bind(host string, port int) {
-	this.tail.Bind(host, port)
+	this.tail.(*handler_.TailContext).AbstractChannelHandlerContext.Bind(host, port)
 }
 
 func (this *ChannelPipeline)GetChannel() channel.IChannel {

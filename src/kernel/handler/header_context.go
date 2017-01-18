@@ -14,7 +14,7 @@ func (this *HeadContext) Connect(host string, port int) {
 }
 
 func (this *HeadContext) Bind(host string, port int) {
-
+	this.Channel.(channel.IServerSocketChannel).DoBindAndAccept(host, port)
 }
 
 func (this *HeadContext) Handler() (handler.IChannelHandler) {
