@@ -1,24 +1,22 @@
 package channel
 
 import (
-	"kernel/intf/external/channel"
 	"kernel/intf/external/handler"
+	"kernel/intf/external/common"
 	handler_   "kernel/handler"
 	"reflect"
-	//"fmt"
-	//"fmt"
 )
 //this is DefaultChannelPipeline
 type ChannelPipeline struct {
 	//impl IChannelPipeline
-	channel.IChannelPipeline
+	common.IChannelPipeline
 	head     handler.IChannelHandlerContext
 	tail     handler.IChannelHandlerContext
-	channel  channel.IChannel
+	channel  common.IChannel
 	handlers map[string]handler.IChannelHandlerContext
 }
 
-func NewChannelPipeline(_channel channel.IChannel) channel.IChannelPipeline {
+func NewChannelPipeline(_channel common.IChannel) common.IChannelPipeline {
 	channelPipeline := &ChannelPipeline{}
 	channelPipeline.channel = _channel
 	channelPipeline.handlers = make(map[string]handler.IChannelHandlerContext, 4)
@@ -49,7 +47,7 @@ func NewChannelPipeline(_channel channel.IChannel) channel.IChannelPipeline {
 	return channelPipeline
 }
 
-func (this *ChannelPipeline)AddFirst(handlers ...handler.IChannelHandler) (channel.IChannelPipeline) {
+func (this *ChannelPipeline)AddFirst(handlers ...common.IChannelHandler) (common.IChannelPipeline) {
 	for i := 0; i < len(handlers); i++ {
 		name := reflect.TypeOf(handlers[i]).Name()
 		handler := handlers[i]
@@ -71,7 +69,7 @@ func (this *ChannelPipeline)addFirst(name string, newCtx handler.IChannelHandler
 	}
 }
 
-func (this *ChannelPipeline)AddLast(_handlers ...handler.IChannelHandler) (channel.IChannelPipeline) {
+func (this *ChannelPipeline)AddLast(_handlers ...common.IChannelHandler) (common.IChannelPipeline) {
 	for i := 0; i < len(_handlers); i++ {
 		handler := _handlers[i]
 		name := reflect.TypeOf(handler).Name()
@@ -92,7 +90,7 @@ func (this *ChannelPipeline)addLast(name string, newCtx handler.IChannelHandlerC
 	}
 }
 
-func (this *ChannelPipeline)AddBefore(baseName string, _handlers ...handler.IChannelHandler) (channel.IChannelPipeline) {
+func (this *ChannelPipeline)AddBefore(baseName string, _handlers ...common.IChannelHandler) (common.IChannelPipeline) {
 	for i := 0; i < len(_handlers); i++ {
 		handler := _handlers[i]
 		name := reflect.TypeOf(handler).Name()
@@ -119,7 +117,7 @@ func (this *ChannelPipeline)addBefore(name string, ctx handler.IChannelHandlerCo
 	}
 }
 
-func (this *ChannelPipeline)AddAfter(baseName string, _handlers ...handler.IChannelHandler) (channel.IChannelPipeline) {
+func (this *ChannelPipeline)AddAfter(baseName string, _handlers ...common.IChannelHandler) (common.IChannelPipeline) {
 	for i := 0; i < len(_handlers); i++ {
 		handler := _handlers[i]
 		name := reflect.TypeOf(handler).Name()
@@ -148,7 +146,7 @@ func (this *ChannelPipeline)addAfter(name string, ctx handler.IChannelHandlerCon
 
 }
 
-func (this *ChannelPipeline)RemoveFirst() (handler.IChannelHandler) {
+func (this *ChannelPipeline)RemoveFirst() (common.IChannelHandler) {
 
 	if this.head.Next() == this.tail {
 		return nil
@@ -158,7 +156,7 @@ func (this *ChannelPipeline)RemoveFirst() (handler.IChannelHandler) {
 
 }
 
-func (this *ChannelPipeline)RemoveLast() (handler.IChannelHandler) {
+func (this *ChannelPipeline)RemoveLast() (common.IChannelHandler) {
 
 	if this.head.Next() == this.tail {
 		return nil
@@ -181,7 +179,7 @@ func (this *ChannelPipeline)remove(ctx handler.IChannelHandlerContext) (handler.
 	return deletedCtx
 }
 
-func (this *ChannelPipeline)Remove(handler handler.IChannelHandler) {
+func (this *ChannelPipeline)Remove(handler common.IChannelHandler) {
 	if handler == nil {
 		return
 	}
@@ -191,7 +189,7 @@ func (this *ChannelPipeline)Remove(handler handler.IChannelHandler) {
 	}
 }
 
-func (this *ChannelPipeline)Replace(oldHandler handler.IChannelHandler, newName string, newHandler handler.IChannelHandler) (channel.IChannelPipeline) {
+func (this *ChannelPipeline)Replace(oldHandler common.IChannelHandler, newName string, newHandler common.IChannelHandler) (common.IChannelPipeline) {
 	if oldHandler == nil {
 		return this
 	}
@@ -230,7 +228,7 @@ func (this *ChannelPipeline)replace(oldCtx handler.IChannelHandlerContext, newNa
 	oldCtx.SetNext(newCtx)
 }
 
-func (this *ChannelPipeline)context(handler handler.IChannelHandler) (handler.IChannelHandlerContext) {
+func (this *ChannelPipeline)context(handler common.IChannelHandler) (handler.IChannelHandlerContext) {
 	if handler == nil {
 		return nil
 	}
@@ -250,6 +248,10 @@ func (this *ChannelPipeline)context(handler handler.IChannelHandler) (handler.IC
 	}
 }
 
+func (this *ChannelPipeline)GetChannel() common.IChannel {
+	return this.channel
+}
+
 func (this *ChannelPipeline)Connect(host string, port int) {
 	this.tail.(*handler_.TailContext).AbstractChannelHandlerContext.Connect(host, port)
 }
@@ -258,6 +260,39 @@ func (this *ChannelPipeline)Bind(host string, port int) {
 	this.tail.(*handler_.TailContext).AbstractChannelHandlerContext.Bind(host, port)
 }
 
-func (this *ChannelPipeline)GetChannel() channel.IChannel {
-	return this.channel
+func (this *ChannelPipeline)FireChannelActive() (common.IChannelPipeline){
+	this.head.(*handler_.HeadContext).AbstractChannelHandlerContext.FireChannelActive()
+	return this
+}
+
+func (this *ChannelPipeline)FireChannelInactive() (common.IChannelPipeline){
+	this.head.(*handler_.HeadContext).AbstractChannelHandlerContext.FireChannelInactive()
+	return this
+}
+
+
+func (this *ChannelPipeline)FireChannelRead(msg interface{}) (common.IChannelPipeline){
+	this.head.(*handler_.HeadContext).AbstractChannelHandlerContext.FireChannelRead(msg)
+	return this
+}
+
+func (this *ChannelPipeline)Read() (common.IChannelPipeline){
+	this.tail.(*handler_.HeadContext).AbstractChannelHandlerContext.Read()
+	return this
+}
+
+
+func (this *ChannelPipeline)Write(msg interface{}) (common.IChannelPipeline){
+	this.tail.(*handler_.HeadContext).AbstractChannelHandlerContext.Write(msg)
+	return this
+}
+
+func (this *ChannelPipeline)Flush() (common.IChannelPipeline){
+	this.tail.(*handler_.HeadContext).AbstractChannelHandlerContext.Flush()
+	return this
+}
+
+func (this *ChannelPipeline)WriteAndFlush(msg interface{}) (common.IChannelPipeline){
+	this.tail.(*handler_.HeadContext).AbstractChannelHandlerContext.WriteAndFlush(msg)
+	return this
 }

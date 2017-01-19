@@ -2,13 +2,13 @@ package handler
 
 import (
 	"kernel/intf/external/handler"
-	"kernel/intf/external/channel"
+	"kernel/intf/external/common"
 )
 type ChannelInitializerHandler struct {//impl IChannelInboundHandler
      handler.IChannelInboundHandler
-     ChannelInitFunc func(channel channel.IChannel)
+     ChannelInitFunc func(channel common.IChannel)
 }
 
-func NewChannelInitializerHandler(channelInitFunc func(channel channel.IChannel))  handler.IChannelHandler{
+func NewChannelInitializerHandler(channelInitFunc func(channel common.IChannel))  common.IChannelHandler{
 	return &ChannelInitializerHandler{ChannelInitFunc:channelInitFunc}
 }

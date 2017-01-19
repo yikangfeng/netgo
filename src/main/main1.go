@@ -3,7 +3,7 @@ package main
 import (
 
 	"fmt"
-	channel_ "kernel/intf/external/channel"
+	channel_ "kernel/intf/external/common"
 	"bootstrap"
 	"kernel/channel"
 	"kernel/handler"

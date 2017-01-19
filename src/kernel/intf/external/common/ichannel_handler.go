@@ -1,5 +1,4 @@
-package handler
-
+package common
 
 
 type IChannelHandler interface {

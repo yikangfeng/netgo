@@ -1,5 +1,11 @@
 package handler
 
-type IChannelInboundHandler interface {//impl IChannelHandler
-	IChannelHandler
+import "kernel/intf/external/common"
+
+type IChannelInboundHandler interface {
+	//impl IChannelHandler
+	common.IChannelHandler
+	ChannelActive_(ctx IChannelHandlerContext)
+	ChannelInactive_(ctx IChannelHandlerContext)
+	ChannelRead_(ctx IChannelHandlerContext, msg interface{})
 }

@@ -1,7 +1,9 @@
 package channel
 
 
-type IServerSocketChannel interface {//impl ISocketChannel
+type IServerSocketChannel interface {
+	//impl ISocketChannel
 	ISocketChannel
-	DoBindAndAccept(host string,port int)
+	DoBindAndAccept(host string, port int)
+	DoClose()
 }

@@ -2,10 +2,10 @@ package main
 
 import (
 	"bootstrap"
-	channel_ "kernel/intf/external/channel"
+	channel_ "kernel/intf/external/common"
 	"fmt"
-	"kernel/handler"
 	"kernel/channel"
+	"kernel/handler"
 )
 
 func main(){

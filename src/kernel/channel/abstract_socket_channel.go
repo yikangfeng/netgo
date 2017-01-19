@@ -1,11 +1,15 @@
 package channel
 
-import "kernel/intf/external/channel"
+import (
+	"kernel/intf/external/channel"
+	"kernel/intf/external/common"
+)
 
 type AbstractChannel struct {
 	//impl IChannel
 	channel.ISocketChannel
-	pipeline channel.IChannelPipeline
+	pipeline common.IChannelPipeline
+	parent common.IChannel
 }
 
 type AbstractSocketChannel struct {
@@ -17,7 +21,7 @@ type AbstractSocketChannel struct {
 func (this *AbstractChannel)Close() {
 
 }
-func (this *AbstractChannel)Pipeline() (channel.IChannelPipeline) {
+func (this *AbstractChannel)Pipeline() (common.IChannelPipeline) {
 	return this.pipeline
 }
 
@@ -35,4 +39,8 @@ func (this *AbstractSocketChannel)Config(config map[string]interface{}) {
 
 func (this *AbstractSocketChannel)GetConfig() map[string]interface{} {
 	return this.config
+}
+
+func (this *AbstractSocketChannel)GetParent() (common.IChannel) {
+	return this.parent
 }
