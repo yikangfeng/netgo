@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"kernel/intf/external/handler"
 	"kernel/channel"
+	handler_ "kernel/handler"
 	"kernel/intf/external/common"
 
 	"log"
@@ -30,7 +31,7 @@ func (this *ServerBootstrapAcceptor) ChannelRead_(ctx handler.IChannelHandlerCon
 	socketChannel := msg.(*channel.SocketChannel)
 	socketChannel.Config(this.ChildOption)
 	if (this.ChildHandler != nil) {
-		socketChannel.Pipeline().AddLast(this.ChildHandler)
+		this.ChildHandler.(*handler_.ChannelInitializerHandler).ChannelInitFunc(socketChannel)
 	}
         go func() {//worker go
 		log.Println("start channel read...")
