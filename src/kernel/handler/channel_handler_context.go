@@ -107,46 +107,56 @@ func (this *AbstractChannelHandlerContext)findContextOutbound() handler.IChannel
 }
 
 func (this *AbstractChannelHandlerContext)Connect(host string, port int) {
-	this.findContextOutbound().Handler().(handler.IChannelOutboundHandler).Connect_(this, host, port)
+	ctx := this.findContextOutbound()
+	ctx.Handler().(handler.IChannelOutboundHandler).Connect_(ctx, host, port)
 }
 
 func (this *AbstractChannelHandlerContext)Bind(host string, port int) {
-	this.findContextOutbound().Handler().(handler.IChannelOutboundHandler).Bind_(this, host, port)
+	ctx := this.findContextOutbound()
+	ctx.Handler().(handler.IChannelOutboundHandler).Bind_(ctx, host, port)
 }
 
 func (this *AbstractChannelHandlerContext)FireChannelActive() (handler.IChannelHandlerContext) {
-	this.findContextInbound().Handler().(handler.IChannelInboundHandler).ChannelActive_(this)
+	ctx := this.findContextInbound()
+	ctx.Handler().(handler.IChannelInboundHandler).ChannelActive_(ctx)
 	return this
 }
 
 func (this *AbstractChannelHandlerContext) FireChannelRead(msg interface{}) (handler.IChannelHandlerContext) {
-	this.findContextInbound().Handler().(handler.IChannelInboundHandler).ChannelRead_(this, msg)
+	ctx := this.findContextInbound()
+	ctx.Handler().(handler.IChannelInboundHandler).ChannelRead_(ctx, msg)
 	return this
 }
 
 func (this *AbstractChannelHandlerContext) FireChannelInactive() (handler.IChannelHandlerContext) {
-	this.findContextInbound().Handler().(handler.IChannelInboundHandler).ChannelInactive_(this)
+	ctx := this.findContextInbound()
+	ctx.Handler().(handler.IChannelInboundHandler).ChannelInactive_(ctx)
 	return this
 }
 
 func (this *AbstractChannelHandlerContext) WriteAndFlush(msg interface{}) {
-	this.findContextOutbound().Handler().(handler.IChannelOutboundHandler).Write_(this, msg)
+	ctx := this.findContextOutbound()
+	ctx.Handler().(handler.IChannelOutboundHandler).Write_(ctx, msg)
 }
 
 func (this *AbstractChannelHandlerContext) Write(msg interface{}) {
-	this.findContextOutbound().Handler().(handler.IChannelOutboundHandler).Write_(this, msg)
+	ctx := this.findContextOutbound()
+	ctx.Handler().(handler.IChannelOutboundHandler).Write_(ctx, msg)
 }
 
 func (this *AbstractChannelHandlerContext) Flush() {
-	this.findContextOutbound().Handler().(handler.IChannelOutboundHandler).Flush_(this)
+	ctx := this.findContextOutbound()
+	ctx.Handler().(handler.IChannelOutboundHandler).Flush_(ctx)
 }
 
 func (this *AbstractChannelHandlerContext) Close() {
-	this.findContextOutbound().Handler().(handler.IChannelOutboundHandler).Close_(this)
+	ctx := this.findContextOutbound()
+	ctx.Handler().(handler.IChannelOutboundHandler).Close_(ctx)
 }
 
 func (this *AbstractChannelHandlerContext) Read() (handler.IChannelHandlerContext) {
-	this.findContextOutbound().Handler().(handler.IChannelOutboundHandler).Read_(this)
+	ctx := this.findContextOutbound()
+	ctx.Handler().(handler.IChannelOutboundHandler).Read_(ctx)
 	return this
 }
 

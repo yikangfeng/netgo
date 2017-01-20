@@ -11,6 +11,7 @@ type IChannelOutboundHandler interface {
 	Close_(ctx IChannelHandlerContext)
 	Write_(ctx IChannelHandlerContext, msg interface{})
 	Flush_(ctx IChannelHandlerContext)
+
 }
 
 

@@ -38,7 +38,7 @@ func (this *HeadContext) Close_(ctx handler.IChannelHandlerContext) {
 
 }
 func (this *HeadContext) Write_(ctx handler.IChannelHandlerContext, msg interface{}) {
-
+	this.GetChannel().(channel.IClientSocketChannel).GetConn().Write(msg.([]byte))
 }
 
 func (this *HeadContext) Flush_(ctx handler.IChannelHandlerContext) {

@@ -5,8 +5,8 @@ import (
 	"kernel/channel"
 	handler_ "kernel/handler"
 	"kernel/intf/external/common"
-
 	"log"
+	"time"
 )
 
 type ServerBootstrapAcceptor struct {
@@ -28,14 +28,30 @@ func (this *ServerBootstrapAcceptor) ChannelRead_(ctx handler.IChannelHandlerCon
 	if msg == nil {
 		return
 	}
+	if (this.ChildHandler == nil) {
+		return
+	}
 	socketChannel := msg.(*channel.SocketChannel)
 	socketChannel.Config(this.ChildOption)
 	if (this.ChildHandler != nil) {
 		this.ChildHandler.(*handler_.ChannelInitializerHandler).ChannelInitFunc(socketChannel)
 	}
-        go func() {//worker go
-		log.Println("start channel read...")
-		socketChannel.Pipeline().FireChannelActive()
+	log.Println("start channel read...")
+	socketChannel.Pipeline().FireChannelActive()
+	go func() {
+		//worker go
+		var buffer []byte = make([]byte, 2048)
+		for {
+			len, err := socketChannel.Conn.Read(buffer)
+			if err != nil {
+				time.Sleep(1 * time.Second)
+				continue
+			}
+                        log.Println(len)
+			log.Println(string(buffer))
+
+		}
+
 	}()
 
 }

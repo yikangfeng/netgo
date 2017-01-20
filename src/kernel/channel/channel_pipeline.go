@@ -49,7 +49,7 @@ func NewChannelPipeline(_channel common.IChannel) common.IChannelPipeline {
 
 func (this *ChannelPipeline)AddFirst(handlers ...common.IChannelHandler) (common.IChannelPipeline) {
 	for i := 0; i < len(handlers); i++ {
-		name := reflect.TypeOf(handlers[i]).Name()
+		name := reflect.TypeOf(handlers[i]).Elem().Name()
 		handler := handlers[i]
 		newCtx := handler_.NewChannelHandlerContext(this, name, handler)
 		this.addFirst(name, newCtx)
@@ -72,7 +72,7 @@ func (this *ChannelPipeline)addFirst(name string, newCtx handler.IChannelHandler
 func (this *ChannelPipeline)AddLast(_handlers ...common.IChannelHandler) (common.IChannelPipeline) {
 	for i := 0; i < len(_handlers); i++ {
 		handler := _handlers[i]
-		name := reflect.TypeOf(handler).Name()
+		name := reflect.TypeOf(handler).Elem().Name()
 		newCtx := handler_.NewChannelHandlerContext(this, name, handler)
 		this.addLast(name, newCtx)
 	}
@@ -93,7 +93,7 @@ func (this *ChannelPipeline)addLast(name string, newCtx handler.IChannelHandlerC
 func (this *ChannelPipeline)AddBefore(baseName string, _handlers ...common.IChannelHandler) (common.IChannelPipeline) {
 	for i := 0; i < len(_handlers); i++ {
 		handler := _handlers[i]
-		name := reflect.TypeOf(handler).Name()
+		name := reflect.TypeOf(handler).Elem().Name()
 		if _, ok := this.handlers[baseName]; !ok {
 			return this
 		}
@@ -183,7 +183,7 @@ func (this *ChannelPipeline)Remove(handler common.IChannelHandler) {
 	if handler == nil {
 		return
 	}
-	name := reflect.TypeOf(handler).Name()
+	name := reflect.TypeOf(handler).Elem().Name()
 	if _, ok := this.handlers[name]; ok {
 		this.remove(this.handlers[name])
 	}

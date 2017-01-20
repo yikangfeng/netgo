@@ -16,6 +16,8 @@ func (this *test) add()  {
 
 
 func main()  {
+	var aa string="hello server"
+	fmt.Println([]byte(aa))
 	var a itest=&test{}
 	fmt.Println(a)
 	a.(*test).add()

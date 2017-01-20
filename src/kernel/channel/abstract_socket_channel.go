@@ -9,11 +9,11 @@ type AbstractChannel struct {
 	//impl IChannel
 	channel.ISocketChannel
 	pipeline common.IChannelPipeline
-	parent common.IChannel
+	parent   common.IChannel
 }
 
 type AbstractSocketChannel struct {
-	//extends AbstractChannel
+			//extends AbstractChannel
 	AbstractChannel
 	config map[string]interface{}
 }
