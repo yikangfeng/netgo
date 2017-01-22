@@ -1,13 +1,12 @@
-package handler
-
-import "kernel/intf/external/common"
+package common
 
 type IChannelHandlerContext interface {
 	//handler context
 	Connect(host string, port int)
 	Bind(host string, port int)
-	Handler() common.IChannelHandler
-	GetChannel() common.IChannel
+	Handler() IChannelHandler
+	GetChannel() IChannel
+	GetPipeline() IChannelPipeline
 	GetName() string
 	Next() IChannelHandlerContext
 	SetNext(ctx IChannelHandlerContext)
@@ -23,4 +22,5 @@ type IChannelHandlerContext interface {
 	Flush()
 	WriteAndFlush(msg interface{})
 	Close()
+	FireExceptionCaught(err error) (IChannelHandlerContext)
 }

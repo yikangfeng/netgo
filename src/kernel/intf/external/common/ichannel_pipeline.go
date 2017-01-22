@@ -24,4 +24,5 @@ type IChannelPipeline interface {
 	Write(msg interface{}) (IChannelPipeline)
 	Flush() (IChannelPipeline)
 	WriteAndFlush(msg interface{}) (IChannelPipeline)
+	FireExceptionCaught(err error) (IChannelPipeline)
 }

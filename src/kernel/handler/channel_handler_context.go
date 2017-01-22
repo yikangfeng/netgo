@@ -7,9 +7,9 @@ import (
 
 type AbstractChannelHandlerContext struct {
 	//impl IChannelHandlerContext
-	handler.IChannelHandlerContext
-	next     handler.IChannelHandlerContext
-	prev     handler.IChannelHandlerContext
+	common.IChannelHandlerContext
+	next     common.IChannelHandlerContext
+	prev     common.IChannelHandlerContext
 	Pipeline common.IChannelPipeline
 	Channel  common.IChannel
 	Name     string
@@ -23,11 +23,11 @@ type ChannelHandlerContext struct {
 	handler common.IChannelHandler
 }
 
-func NewChannelHandlerContext(_pipeline common.IChannelPipeline, _name string, _handler common.IChannelHandler) handler.IChannelHandlerContext {
+func NewChannelHandlerContext(_pipeline common.IChannelPipeline, _name string, _handler common.IChannelHandler) common.IChannelHandlerContext {
 	return NewChannelHandlerContext0(_pipeline, _name, isInbound(_handler), isOutbound(_handler), _handler)
 }
 
-func NewChannelHandlerContext0(_pipeline common.IChannelPipeline, _name string, inBound bool, outBound bool, _handler common.IChannelHandler) handler.IChannelHandlerContext {
+func NewChannelHandlerContext0(_pipeline common.IChannelPipeline, _name string, inBound bool, outBound bool, _handler common.IChannelHandler) common.IChannelHandlerContext {
 	context := &ChannelHandlerContext{}
 	context.Inbound = inBound
 	context.Outbound = outBound
@@ -56,19 +56,23 @@ func (this *AbstractChannelHandlerContext)GetChannel() common.IChannel {
 	return this.Channel
 }
 
-func (this *AbstractChannelHandlerContext)Next() (handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext)GetPipeline() common.IChannelPipeline {
+	return this.Pipeline
+}
+
+func (this *AbstractChannelHandlerContext)Next() (common.IChannelHandlerContext) {
 	return this.next
 }
 
-func (this *AbstractChannelHandlerContext)Prev() (handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext)Prev() (common.IChannelHandlerContext) {
 	return this.prev
 }
 
-func (this *AbstractChannelHandlerContext)SetNext(ctx handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext)SetNext(ctx common.IChannelHandlerContext) {
 	this.next = ctx;
 }
 
-func (this *AbstractChannelHandlerContext)SetPrev(ctx handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext)SetPrev(ctx common.IChannelHandlerContext) {
 	this.prev = ctx
 }
 
@@ -84,8 +88,8 @@ func (this *AbstractChannelHandlerContext)GetOutbound() (bool) {
 	return this.Outbound
 }
 
-func (this *AbstractChannelHandlerContext)findContextInbound() handler.IChannelHandlerContext {
-	var ctx handler.IChannelHandlerContext = this
+func (this *AbstractChannelHandlerContext)findContextInbound() common.IChannelHandlerContext {
+	var ctx common.IChannelHandlerContext = this
 	for {
 		ctx = ctx.Next();
 		if ctx.GetInbound() {
@@ -95,8 +99,8 @@ func (this *AbstractChannelHandlerContext)findContextInbound() handler.IChannelH
 	return ctx
 }
 
-func (this *AbstractChannelHandlerContext)findContextOutbound() handler.IChannelHandlerContext {
-	var ctx handler.IChannelHandlerContext = this
+func (this *AbstractChannelHandlerContext)findContextOutbound() common.IChannelHandlerContext {
+	var ctx common.IChannelHandlerContext = this
 	for {
 		ctx = ctx.Prev();
 		if ctx.GetOutbound() {
@@ -116,19 +120,19 @@ func (this *AbstractChannelHandlerContext)Bind(host string, port int) {
 	ctx.Handler().(handler.IChannelOutboundHandler).Bind_(ctx, host, port)
 }
 
-func (this *AbstractChannelHandlerContext)FireChannelActive() (handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext)FireChannelActive() (common.IChannelHandlerContext) {
 	ctx := this.findContextInbound()
 	ctx.Handler().(handler.IChannelInboundHandler).ChannelActive_(ctx)
 	return this
 }
 
-func (this *AbstractChannelHandlerContext) FireChannelRead(msg interface{}) (handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext) FireChannelRead(msg interface{}) (common.IChannelHandlerContext) {
 	ctx := this.findContextInbound()
 	ctx.Handler().(handler.IChannelInboundHandler).ChannelRead_(ctx, msg)
 	return this
 }
 
-func (this *AbstractChannelHandlerContext) FireChannelInactive() (handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext) FireChannelInactive() (common.IChannelHandlerContext) {
 	ctx := this.findContextInbound()
 	ctx.Handler().(handler.IChannelInboundHandler).ChannelInactive_(ctx)
 	return this
@@ -154,9 +158,14 @@ func (this *AbstractChannelHandlerContext) Close() {
 	ctx.Handler().(handler.IChannelOutboundHandler).Close_(ctx)
 }
 
-func (this *AbstractChannelHandlerContext) Read() (handler.IChannelHandlerContext) {
+func (this *AbstractChannelHandlerContext) Read() (common.IChannelHandlerContext) {
 	ctx := this.findContextOutbound()
 	ctx.Handler().(handler.IChannelOutboundHandler).Read_(ctx)
 	return this
 }
 
+func (this *AbstractChannelHandlerContext) FireExceptionCaught(err error) (common.IChannelHandlerContext) {
+	ctx := this.Next()
+	ctx.Handler().ExceptionCaught(ctx, err)
+	return this
+}

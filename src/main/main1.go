@@ -1,7 +1,6 @@
 package main
 
 import (
-
 	"fmt"
 	channel_ "kernel/intf/external/common"
 	"bootstrap"
@@ -11,17 +10,13 @@ import (
 	"sync"
 )
 
-
 type test interface {
-
 	add()
 }
 
-type test1 struct {//impl test
-
+type test1 struct {
+	//impl test
 }
-
-
 
 type test2 struct {
 	test1
@@ -32,51 +27,51 @@ type TestClientChannelHandler struct {
 	handler_.IChannelInboundHandler
 }
 
-var _ctx handler_.IChannelHandlerContext
+var _ctx channel_.IChannelHandlerContext
 
-func (this *TestClientChannelHandler)ChannelActive_(ctx handler_.IChannelHandlerContext) {
+func (this *TestClientChannelHandler)ChannelActive_(ctx channel_.IChannelHandlerContext) {
 	fmt.Println("TestClientChannelHandler channel active called.")
-	_ctx=ctx
+	_ctx = ctx
 	_wait.Done()
 }
 
-func (this *TestClientChannelHandler)ChannelInactive_(ctx handler_.IChannelHandlerContext) {
+func (this *TestClientChannelHandler)ChannelInactive_(ctx channel_.IChannelHandlerContext) {
 
 }
 
-func (this *TestClientChannelHandler)ChannelRead_(ctx handler_.IChannelHandlerContext, msg interface{}) {
+func (this *TestClientChannelHandler)ChannelRead_(ctx channel_.IChannelHandlerContext, msg interface{}) {
 
+}
+
+func (this *TestClientChannelHandler)ExceptionCaught(ctx channel_.IChannelHandlerContext, err error) {
+	fmt.Println("has error")
+	fmt.Println(err)
 }
 
 var _wait sync.WaitGroup
 
-func main(){
-  bootstrap:= bootstrap.NewBootstrap()
-	bootstrap.Channel(channel.NewTCPSocketChannel()).Handler(handler.NewChannelInitializerHandler(func(channel channel_.IChannel){
+func main() {
+	bootstrap := bootstrap.NewBootstrap()
+	bootstrap.Channel(channel.NewTCPSocketChannel()).Handler(handler.NewChannelInitializerHandler(func(channel channel_.IChannel) {
 		channel.Pipeline().AddLast(&TestClientChannelHandler{})
-	})).Connect("127.0.0.1",1024)
+	})).Connect("127.0.0.1", 1024)
 
 	_wait.Add(1)
 	_wait.Wait()
 
-
-
 	_ctx.Write([]byte("hello server"))
 
-
-
-
-
-
-	var a string="b"
-	var b string="a"
-	if a!=b{
+	var a string = "b"
+	var b string = "a"
+	if a != b {
 		fmt.Println("true")
 	}
 
+	//_wait.Add(1)
+	//_wait.Wait()
 
 }
 
-func (this *test1) add(){
+func (this *test1) add() {
 
 }

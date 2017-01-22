@@ -1,30 +1,32 @@
 package bootstrap
 
 import (
-	"kernel/intf/external/handler"
 	"kernel/channel"
 	handler_ "kernel/handler"
 	"kernel/intf/external/common"
 	"log"
-	"time"
+	"net"
 )
 
 type ServerBootstrapAcceptor struct {
 	//impl IChannelInboundHandler
-	handler.IChannelInboundHandler
+	handler_.ChannelHandlerAdapter
 	ChildOption  map[string]interface{}
 	ChildHandler common.IChannelHandler
 }
 
-func (this *ServerBootstrapAcceptor) ChannelActive_(ctx handler.IChannelHandlerContext) {
+func (this *ServerBootstrapAcceptor) ChannelActive_(ctx common.IChannelHandlerContext) {
 	//do nothing.
 }
 
-func (this *ServerBootstrapAcceptor) ChannelInactive_(ctx handler.IChannelHandlerContext) {
+func (this *ServerBootstrapAcceptor) ChannelInactive_(ctx common.IChannelHandlerContext) {
+	//do nothing.
+}
+func (this *ServerBootstrapAcceptor) ExceptionCaught_(ctx common.IChannelHandlerContext, err error) {
 	//do nothing.
 }
 
-func (this *ServerBootstrapAcceptor) ChannelRead_(ctx handler.IChannelHandlerContext, msg interface{}) {
+func (this *ServerBootstrapAcceptor) ChannelRead_(ctx common.IChannelHandlerContext, msg interface{}) {
 	if msg == nil {
 		return
 	}
@@ -34,20 +36,24 @@ func (this *ServerBootstrapAcceptor) ChannelRead_(ctx handler.IChannelHandlerCon
 	socketChannel := msg.(*channel.SocketChannel)
 	socketChannel.Config(this.ChildOption)
 	if (this.ChildHandler != nil) {
+		socketChannel.Pipeline().AddLast(this.ChildHandler)
 		this.ChildHandler.(*handler_.ChannelInitializerHandler).ChannelInitFunc(socketChannel)
 	}
 	log.Println("start channel read...")
 	socketChannel.Pipeline().FireChannelActive()
 	go func() {
 		//worker go
+		var cchannel net.Conn = socketChannel.Conn;
+		defer cchannel.Close()
 		var buffer []byte = make([]byte, 2048)
 		for {
-			len, err := socketChannel.Conn.Read(buffer)
+			len, err := cchannel.Read(buffer)
 			if err != nil {
-				time.Sleep(1 * time.Second)
-				continue
+				//has error.
+				socketChannel.Pipeline().FireExceptionCaught(err)
+				break
 			}
-                        log.Println(len)
+			log.Println(len)
 			log.Println(string(buffer))
 
 		}
