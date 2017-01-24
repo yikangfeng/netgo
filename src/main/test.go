@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"bytes"
 	"encoding/binary"
+
 )
 
 type itest interface {
@@ -19,8 +20,18 @@ func (this *test) add() {
 	fmt.Println("add method called.")
 }
 
+type testoutstruct struct {
+	Name string
+}
+
 func testout(out interface{}) {
-     append((*out).([]string), "aa")
+
+	var a string="kf"
+	strp:=out.(*string)
+	fmt.Println(strp)
+	strp=&a
+	fmt.Println(strp)
+	fmt.Println(*strp)
 }
 
 func testslice(out []string) {
@@ -29,13 +40,17 @@ func testslice(out []string) {
 }
 func main() {
 
-	stringslice := []string{"a"}
-	var testinter interface{} = stringslice
-	fmt.Println(testinter.([]string))
+	var ss string="test"
 
-	var stringslice1 interface{} = &append(stringslice, "b")
-	testout(stringslice1)
-	fmt.Println(*stringslice1.([]string))
+	testouts:=&ss
+
+	fmt.Println(testouts)
+
+	testout(testouts)
+        fmt.Println(*testouts)
+
+
+
 
 	var network1 bytes.Buffer
 	packetBody := "hello server"

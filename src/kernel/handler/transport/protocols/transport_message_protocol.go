@@ -1,6 +1,6 @@
 package protocols
 
 type ITransportMessageProtocol interface {
-	Packet(msg interface{}) (int, error, interface{})
-	Unpacket(msg interface{}) (int, error, interface{})
+	Packet(msg interface{}, out interface{}) (int, error)
+	Unpacket(msg interface{}, out interface{}) (int, error)
 }

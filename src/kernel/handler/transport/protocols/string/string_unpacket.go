@@ -20,21 +20,22 @@ func NewStringUnpacket() (common.IChannelHandler) {
 	return &StringUnpacket{}
 }
 
-func (this *StringUnpacket)Packet(msg interface{}) (int, error, interface{}) {
-	return 0, nil, nil
+func (this *StringUnpacket)Packet(msg interface{}, out interface{}) (int, error) {
+	return 0, nil
 }
 
-func (this *StringUnpacket)Unpacket(msg interface{}) (int, error, interface{}) {
-
-	return 0, nil, string(*msg.(protocols.IBinaryMessage).GetPacketBody())
+func (this *StringUnpacket)Unpacket(msg interface{}, out interface{}) (int, error) {
+	*(out.(*string)) = string(*msg.(protocols.IBinaryMessage).GetPacketBody())
+	return 0, nil
 }
 
 func (this *StringUnpacket)ChannelRead_(ctx common.IChannelHandlerContext, msg interface{}) {
 
 	if binaryMessage, ok := msg.(protocols.IBinaryMessage); ok {
-		_, _, content := this.Unpacket(binaryMessage)
-		fmt.Println(content)
-		ctx.FireChannelRead(content)
+		strp := new(string)
+		this.Unpacket(binaryMessage, strp)
+		fmt.Println(*strp)
+		ctx.FireChannelRead(*strp)
 	}
 
 }
