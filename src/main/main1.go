@@ -8,6 +8,8 @@ import (
 	"kernel/handler"
 	handler_ "kernel/intf/external/handler"
 	"sync"
+	"bytes"
+	"encoding/binary"
 )
 
 type test interface {
@@ -59,7 +61,22 @@ func main() {
 	_wait.Add(1)
 	_wait.Wait()
 
-	_ctx.Write([]byte("hello server"))
+	var network bytes.Buffer
+
+	packetBody := []byte("hello server")
+	packetHeaderContent := []byte("protocolName:stringprotocol")
+
+	binary.Write(&network, binary.BigEndian, uint32(len(packetHeaderContent) + len(packetBody) + 4 + 4))
+
+	binary.Write(&network, binary.BigEndian, uint32(len(packetHeaderContent)))
+
+	binary.Write(&network, binary.BigEndian, packetHeaderContent)
+
+	binary.Write(&network, binary.BigEndian, packetBody)
+
+	fmt.Println(uint32(len(network.Bytes())))
+
+	_ctx.Write(network.Bytes())
 
 	var a string = "b"
 	var b string = "a"

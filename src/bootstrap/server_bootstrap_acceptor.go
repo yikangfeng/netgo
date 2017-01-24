@@ -6,6 +6,8 @@ import (
 	"kernel/intf/external/common"
 	"log"
 	"net"
+	"bytes"
+	"io"
 )
 
 type ServerBootstrapAcceptor struct {
@@ -36,7 +38,6 @@ func (this *ServerBootstrapAcceptor) ChannelRead_(ctx common.IChannelHandlerCont
 	socketChannel := msg.(*channel.SocketChannel)
 	socketChannel.Config(this.ChildOption)
 	if (this.ChildHandler != nil) {
-		socketChannel.Pipeline().AddLast(this.ChildHandler)
 		this.ChildHandler.(*handler_.ChannelInitializerHandler).ChannelInitFunc(socketChannel)
 	}
 	log.Println("start channel read...")
@@ -45,16 +46,28 @@ func (this *ServerBootstrapAcceptor) ChannelRead_(ctx common.IChannelHandlerCont
 		//worker go
 		var cchannel net.Conn = socketChannel.Conn;
 		defer cchannel.Close()
-		var buffer []byte = make([]byte, 2048)
+		var packet *bytes.Buffer = bytes.NewBuffer(make([]byte, 0))
 		for {
+			var buffer []byte = make([]byte, 1024)
 			len, err := cchannel.Read(buffer)
 			if err != nil {
-				//has error.
-				socketChannel.Pipeline().FireExceptionCaught(err)
-				break
+				if err == io.EOF {
+					continue
+				}
+				if err != io.EOF {
+					//has error.
+					socketChannel.Pipeline().FireExceptionCaught(err)
+					break
+				}
 			}
-			log.Println(len)
-			log.Println(string(buffer))
+			if len <= 0 {
+				continue
+			}
+
+			packet.Write(buffer[0:len])
+			buffer = nil//clear slice
+			socketChannel.Pipeline().FireChannelRead(packet)
+			packet.Reset()
 
 		}
 

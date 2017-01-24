@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"encoding/gob"
+	"bytes"
+	"encoding/binary"
+)
 
 type itest interface {
 	add()
@@ -14,7 +19,65 @@ func (this *test) add() {
 	fmt.Println("add method called.")
 }
 
+func testout(out interface{}) {
+     append((*out).([]string), "aa")
+}
+
+func testslice(out []string) {
+	t := append(out, "aa")
+	fmt.Println(t)
+}
 func main() {
+
+	stringslice := []string{"a"}
+	var testinter interface{} = stringslice
+	fmt.Println(testinter.([]string))
+
+	var stringslice1 interface{} = &append(stringslice, "b")
+	testout(stringslice1)
+	fmt.Println(*stringslice1.([]string))
+
+	var network1 bytes.Buffer
+	packetBody := "hello server"
+	//var packetLength bytes.Buffer
+	binary.Write(&network1, binary.BigEndian, uint32(len(packetBody)))
+
+	binary.Write(&network1, binary.BigEndian, []byte("<BOF>"))
+
+	binary.Write(&network1, binary.BigEndian, []byte("stringprotocol"))
+
+	binary.Write(&network1, binary.BigEndian, []byte(packetBody))
+
+	var bb uint32
+	bb = binary.BigEndian.Uint32(network1.Bytes()[0:4])
+	fmt.Println(bb)
+
+	fmt.Println(network1.Len())
+	fmt.Println(network1.Len() - 4 - 5 - int(bb))
+
+	fmt.Println(string(network1.Bytes()[9:9 + 14]))
+
+	fmt.Println("end")
+
+	slice := make([]string, 0)
+	slice1 := append(slice, "a", "b", "c", "d")
+	fmt.Println(slice1)
+
+	buf := new(bytes.Buffer)
+	binary.Write(buf, binary.BigEndian, []byte("<BOF>"))
+	fmt.Println("hold byte size=")
+	fmt.Println(buf.Len())
+
+	var network bytes.Buffer
+	enc := gob.NewEncoder(&network)
+	enc.Encode("hello server")
+
+	dec := gob.NewDecoder(&network)
+
+	var t string;
+	dec.Decode(&t)
+	fmt.Println("t=" + t)
+
 	testM()
 	var aa string = "hello server"
 	fmt.Println([]byte(aa))

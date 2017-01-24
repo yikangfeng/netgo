@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"kernel/channel"
 	"kernel/handler"
+	"kernel/handler/transport/protocols"
+	string_ "kernel/handler/transport/protocols/string"
 )
 
 type TestServerChannelHandler struct {
@@ -21,7 +23,7 @@ func (this *TestServerChannelHandler)ChannelInactive_(ctx channel_.IChannelHandl
 }
 
 func (this *TestServerChannelHandler)ChannelRead_(ctx channel_.IChannelHandlerContext, msg interface{}) {
-
+	fmt.Println("TestServerChannelHandler accept content=" + msg.(string))
 }
 
 func (this *TestServerChannelHandler)ExceptionCaught(ctx channel_.IChannelHandlerContext, err error) {
@@ -36,6 +38,8 @@ func main() {
 	serverBootstrap.Channel(channel.NewTCPServerSocketChannel()).Handler(handler.NewChannelInitializerHandler(func(channel channel_.IChannel) {
 		fmt.Println("hello")
 	})).ChildHandler(handler.NewChannelInitializerHandler(func(channel channel_.IChannel) {
+		channel.Pipeline().AddLast(protocols.NewLengthFieldBasedFrameDecoder(0,0,4,0,0))
+		channel.Pipeline().AddLast(string_.NewStringUnpacket())
 		channel.Pipeline().AddLast(&TestServerChannelHandler{})
 	})).Bind(1024).Sync()
 
